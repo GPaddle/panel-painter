@@ -5,11 +5,19 @@
   "main": "p5js-demo.js",
   "scripts": {
     "clean": "rimraf dist",
-    "init": "mkdir dist",
+    "init": "mkdirp dist",
     "app-p5": "cpx \"./node_modules/p5/lib/**/*.min.js\" dist/",
     "app-client": "cpx \"src/client/*\" dist/",
+    "gzip:dirs": "mkdirp dist-gz/addons/",
+    "gzip:app": "cat dist/app.js | gzip > dist-gz/app.js.gz",
+    "gzip:index": "cat dist/index.html | gzip > dist-gz/index.html.gz",
+    "gzip:style": "cat dist/style.css | gzip > dist-gz/style.css.gz",
+    "gzip:p5-main": "cat dist/p5.min.js | gzip > dist-gz/p5.min.js.gz",
+    "gzip:p5-dom": "cat dist/addons/p5.dom.min.js | gzip > dist-gz/addons/p5.dom.min.js.gz",
+    "gzip:p5-sound": "cat dist/addons/p5.sound.min.js | gzip > dist-gz/addons/p5.sound.min.js.gz",
     "build": "npm-run-all clean init app-p5 app-client",
-    "server": "node src/server/server.js"
+    "server": "node src/server/server.js",
+    "gzips": "npm-run-all gzip:*"
   },
   "repository": {
     "type": "git",
@@ -25,6 +33,7 @@
     "cpx": "^1.5.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
+    "mkdirp": "^0.5.1",
     "npm-run-all": "^4.1.5",
     "p5": "^0.9.0",
     "rimraf": "^3.0.0"
