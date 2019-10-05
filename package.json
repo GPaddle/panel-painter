@@ -1,0 +1,32 @@
+{
+  "name": "panel-painter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "p5js-demo.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "init": "mkdir dist",
+    "app-p5": "cpx \"./node_modules/p5/lib/**/*.min.js\" dist/",
+    "app-client": "cpx \"src/client/*\" dist/",
+    "build": "npm-run-all clean init app-p5 app-client",
+    "server": "node src/server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pauls-3d-things/panel-painter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pauls-3d-things/panel-painter/issues"
+  },
+  "homepage": "https://github.com/pauls-3d-things/panel-painter#readme",
+  "devDependencies": {
+    "cpx": "^1.5.0",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "npm-run-all": "^4.1.5",
+    "p5": "^0.9.0",
+    "rimraf": "^3.0.0"
+  }
+}

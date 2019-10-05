@@ -7,11 +7,16 @@ const panelHeight = 8;
 let cellSize = 0;
 let canvasWidth = 0;
 let canvasHeight = 0;
+let canvasMargin = 20;
 
 let colorPicker;
 
 function setup() {
-  cellSize = (displayWidth - (borderWidth * (panelWidth - 1))) / panelWidth;
+  cellSize = displayWidth - canvasMargin * 2; // remove margins
+  cellSize = cellSize - (borderWidth * (panelWidth + 1)); // remove borders ;)
+  cellSize = cellSize / panelWidth; // divide by number of cells horizontally
+  cellSize = int(cellSize);
+
   canvasWidth = cellSize * panelWidth + (panelWidth - 1) * borderWidth;
   canvasHeight = cellSize * panelHeight + (panelHeight - 1) * borderWidth;
 
@@ -47,3 +52,5 @@ function mouseDragged() {
     panelData[int(x / (cellSize + borderWidth))][int(y / (cellSize + borderWidth))] = color;
   }
 }
+
+console.log("started");
