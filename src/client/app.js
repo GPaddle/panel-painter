@@ -1,21 +1,23 @@
-
-
 const props = {
     panelWidth: 32,
     panelHeight: 8,
     borderWidth: 4,
     canvasMargin: 20, // if you change this also change in style.css for centering
 }
+
 const state = {
     cellSize: 0,
     canvasWidth: 0,
     canvasHeight: 0,
     panelData: [],
     lastX: -1,
-    lastY: -1
+    lastY: -1,
+    ui: {
+        colorPicker: 0,
+        resetButton: 0,
+        fillButton: 0,
+    }
 }
-
-let colorPicker,resetButton,fillButton;
 
 function setup() {
 
@@ -29,21 +31,23 @@ function setup() {
 
     createCanvas(state.canvasWidth, state.canvasHeight);
     background('grey');
-    colorPicker = createColorPicker('#ff0000');
+    state.ui.colorPicker = createColorPicker('#f00');
 
-        resetButton = createButton('reset');
-//        resetButton.position(100,props.panelHeight);
-        resetButton.mousePressed(resetFunc);
+    state.ui.resetButton = createButton('reset');
+    state.ui.resetButton.mousePressed(resetPannel);
 
-        fillButton = createButton('fill');
-//        fillButton.position(200,props.panelHeight);
-        fillButton.mousePressed(fillFunc);
+    state.ui.fillButton = createButton('fill');
+    state.ui.fillButton.mousePressed(function() {
+        let color = state.ui.colorPicker.color();
+        fillPanel(color)
+    });
 
     for (let x = 0; x < props.panelWidth; x++) {
         state.panelData[x] = [];
         for (let y = 0; y < props.panelHeight; y++) {
             state.panelData[x][y] = color(0, 0, 0);
         }
+
     }
 }
 
@@ -54,43 +58,37 @@ function draw() {
         for (let y = 0; y < props.panelHeight; y++) {
             fill(state.panelData[x][y]);
             rect((state.cellSize + props.borderWidth) * x,
-            (state.cellSize + props.borderWidth) * y,
-            state.cellSize,
-            state.cellSize);
+                (state.cellSize + props.borderWidth) * y,
+                state.cellSize,
+                state.cellSize);
         }
     }
 }
 
 
-function sendData(x,y,r,g,b){
-    if(webSocket.readyState === webSocket.OPEN){
-        var color = state.panelData[x][y];
+function sendData(x, y, r, g, b) {
+    if (webSocket.readyState === webSocket.OPEN) {
+        let color = state.panelData[x][y];
 
-        var r1=color.levels[0];
-        var g1=color.levels[1];
-        var b1=color.levels[2];
-        if (r!=r1 || g!=g1 || b!=b1) {
+        let r1 = color.levels[0];
+        let g1 = color.levels[1];
+        let b1 = color.levels[2];
+        if (r != r1 || g != g1 || b != b1) {
             webSocket.send([x, y, r, g, b]);
         }
     }
 }
 
-function resetFunc(){
-    for (var x = 0; x < props.panelWidth; x++) {
-        for (var y = 0; y < props.panelHeight; y++) {
-            sendData(x,y,0,0,0);
-            state.panelData[x][y]=color(0, 0, 0);
-        }
-    }
+function resetPannel() {
+    fillPanel(color(0, 0, 0));
 }
 
 
-function fillFunc(){
-    var color = colorPicker.color();
-    for (var x = 0; x < props.panelWidth; x++) {
-        for (var y = 0; y < props.panelHeight; y++) {
-            sendData(x,y,color.levels[0],color.levels[1],color.levels[2]);
-            state.panelData[x][y]=color;
+function fillPanel(col) {
+    for (let x = 0; x < props.panelWidth; x++) {
+        for (let y = 0; y < props.panelHeight; y++) {
+            sendData(x, y, col.levels[0], col.levels[1], col.levels[2]);
+            state.panelData[x][y] = col;
         }
     }
 }
@@ -101,7 +99,7 @@ function mouseDragged() {
         mouseY >= 0 && mouseY <= (state.cellSize + props.borderWidth) * props.panelHeight) {
         let x = mouseX;
         let y = mouseY;
-        let color = colorPicker.color();
+        let color = state.ui.colorPicker.color();
         // TODO: this is where we push the change to the server
         let targetX = int(x / (state.cellSize + props.borderWidth));
         let targetY = int(y / (state.cellSize + props.borderWidth));
@@ -110,17 +108,17 @@ function mouseDragged() {
         let g = color.levels[1];
         let b = color.levels[2];
 
-        var colorOld =state.panelData[targetX][targetY];
+        var colorOld = state.panelData[targetX][targetY];
         let r1 = red(colorOld);
         let g1 = green(colorOld);
         let b1 = blue(colorOld);
 
         //If the color has not changed, don't update it
 
-        if ((targetX != state.lastX || targetY != state.lastY)
-        && (r!=r1 || g!=g1 || b!=b1)) {
+        if ((targetX != state.lastX || targetY != state.lastY) &&
+            (r != r1 || g != g1 || b != b1)) {
 
-            sendData(targetX,targetY,r,g,b);
+            sendData(targetX, targetY, r, g, b);
             state.panelData[targetX][targetY] = color;
         }
         state.lastX = targetX;
