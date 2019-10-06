@@ -13,9 +13,9 @@ const state = {
     lastX: -1,
     lastY: -1,
     ui: {
-        colorPicker: 0,
-        resetButton: 0,
-        fillButton: 0,
+        colorPicker: undefined,
+        resetButton: undefined,
+        fillButton: undefined,
     }
 }
 
