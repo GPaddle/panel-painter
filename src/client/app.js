@@ -3,7 +3,7 @@ const props = {
     panelHeight: 8,
     borderWidth: 4,
     canvasMargin: 20, // if you change this also change in style.css for centering
-}
+};
 
 const state = {
     cellSize: 0,
@@ -17,7 +17,7 @@ const state = {
         resetButton: undefined,
         fillButton: undefined,
     }
-}
+};
 
 function setup() {
 
@@ -39,7 +39,7 @@ function setup() {
     state.ui.fillButton = createButton('fill');
     state.ui.fillButton.mousePressed(function() {
         let color = state.ui.colorPicker.color();
-        fillPanel(color)
+        fillPanel(color);
     });
 
     for (let x = 0; x < props.panelWidth; x++) {
