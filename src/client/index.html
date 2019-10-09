@@ -1,10 +1,16 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="p5.min.js"></script>
-    <script src="addons/p5.dom.min.js"></script>
     <script src="app.js"></script>
   </head>
-  <body>
-  </body>
+  <body onload=initialise()>
+    <canvas id="canvas1" width="1500" height="400" style="width:100vw">
+        Canvas tag not supported</canvas>
+    <div id="Control">
+        <input type="color" id="colorPicker" name="colorPicker" value="#ffff00">
+        <button id="fill"> fill </button>
+        <button id="reset"> reset </button>
+    </div>
+
+</body>
 </html>
