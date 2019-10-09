@@ -15,7 +15,24 @@ body {
     align-items: center;
 }
 
-.p5Canvas {
+
+canvas {
     margin-left: auto;
     margin-right: auto;
+    width: 99vw;
+}
+
+input {
+    height: 75px;
+    width: 100%;
+}
+
+button {
+    width: 100%;
+    height: 40px;
+}
+
+.Control {
+    display: flex;
+    flex-flow: column;
 }
