@@ -2,7 +2,7 @@ const props = {
     panelWidth: 32,
     panelHeight: 8,
     borderWidth: 4,
-    canvasMargin: 20, // if you change this also change in style.css for centering
+    canvasMargin: 10, // if you change this also change in style.css for centering
 };
 
 const state = {
@@ -24,24 +24,20 @@ const state = {
 
 function initialise() {
 
-    //    let canvas = document.getElementById('mycanvas').width;
-    //    let height = canvas.height;
 
+    document.getElementById("fillBucket").style.color=state.color;
+    let windowWidth = parseInt(document.body.clientWidth);
 
-    state.cellSize = document.getElementById('canvas1').width - props.canvasMargin * 2; // remove margins
-    state.cellSize -= (props.borderWidth * (props.panelWidth + 1)); // remove borders ;)
-    state.cellSize /= props.panelWidth; // divide by number of cells horizontally
-    state.cellSize = parseInt(state.cellSize);
-
-    //    state.canvasWidth = state.cellSize * props.panelWidth + (props.panelWidth - 1) * props.borderWidth;
-    //    state.canvasHeight = state.cellSize * props.panelHeight + (props.panelHeight - 1) * props.borderWidth;
+    computeCellSize();
 
     let canvas = document.getElementById('canvas1');
-    state.canvasWidth = canvas.width;
-    state.canvasHeight = canvas.height;
-
 
     state.ui.canvas = canvas;
+
+    state.canvasWidth = windowWidth;
+    state.canvasHeight = windowWidth * (props.panelHeight / props.panelWidth);
+    canvas.height = state.canvasHeight;
+    canvas.width = state.canvasWidth;
 
     for (let x = 0; x < props.panelWidth; x++) {
         state.panelData[x] = [];
@@ -53,25 +49,45 @@ function initialise() {
     document.getElementById('colorPicker').addEventListener("change", watchColorPicker, false);
 
     state.ui.fillButton = document.getElementById("fill");
-    state.ui.fillButton.addEventListener("click", function() {
+    state.ui.fillButton.addEventListener("click", function () {
         fill(state.color);
     });
     state.ui.resetButton = document.getElementById("reset");
-    state.ui.resetButton.addEventListener("click", function() {
+    state.ui.resetButton.addEventListener("click", function () {
         fill("#000000");
     });
 
     state.ui.canvas.addEventListener("mousedown", onMouseDown, false);
 
-    let wsUrl = window.location.protocol === "https:" ? "wss://" : "ws://";
-    wsUrl += window.location.host + window.location.pathname;
-    wsUrl += "draw";
 
-    console.log("WebSocket to", wsUrl);
-    const webSocket = new WebSocket(wsUrl);
+    window.addEventListener("resize", reComputeSize);
+
+    reComputeSize();
+    draw();
+}
+
+function computeCellSize() {
+    let windowWidth = parseInt(document.body.clientWidth);
+
+    state.cellSize = windowWidth - 2 * props.canvasMargin;
+    state.cellSize -= (props.borderWidth * (props.panelWidth + 1));
+    state.cellSize /= props.panelWidth;
+    state.cellSize = parseInt(state.cellSize);
+}
+
+function reComputeSize() {
+
+    let windowWidth = parseInt(document.body.clientWidth);
+    computeCellSize();
+
+    state.canvasWidth = windowWidth;
+    state.canvasHeight = windowWidth * (props.panelHeight / props.panelWidth);
+
+    let canvas = document.getElementById('canvas1');
+    canvas.height = state.canvasHeight;
+    canvas.width = state.canvasWidth;
 
     draw();
-
 
 }
 
@@ -93,20 +109,23 @@ function fill(color) {
 
 function watchColorPicker(event) {
     state.color = event.target.value;
+    document.getElementById("fillBucket").style.color=state.color;
 }
 
 function onMouseDown(event) {
 
 
     function onMouseMove(event) {
-        var canvas_x = event.pageX;
-        var canvas_y = event.pageY;
+        var canvas_x = event.pageX - 10;
+        var canvas_y = event.pageY - 10;
+
 
 
         if (canvas_x >= 0 && canvas_x <= state.canvasWidth && canvas_y >= 0 && canvas_y <= state.canvasHeight) {
 
-            let targetX = parseInt(canvas_x / (state.cellSize + 2 * props.borderWidth));
-            let targetY = parseInt(canvas_y / (state.cellSize + 2 * props.borderWidth));
+            let targetX = parseInt(canvas_x / (state.cellSize + props.borderWidth) / 1);
+            let targetY = parseInt(canvas_y / (state.cellSize + props.borderWidth) / 1);
+
             if (state.color != state.panelData[targetX][targetY]) {
                 state.panelData[targetX][targetY] = state.color;
                 //console.log(state.color);
@@ -147,6 +166,13 @@ function sendData(x, y, r, g, b) {
 function draw() {
 
     state.ui.canvas = document.getElementById("canvas1").getContext("2d");
+    document.getElementById("canvas1").background = "f00000";
+    state.ui.canvas.fillStyle = "#f00000";
+    state.ui.canvas.fill();
+
+    //    console.log(state.canvasHeight);
+
+
     for (let x = 0; x < props.panelWidth; x++) {
         for (let y = 0; y < props.panelHeight; y++) {
             state.ui.canvas.fillStyle = state.panelData[x][y];
