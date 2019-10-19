@@ -21,7 +21,7 @@ const state = {
 
 function setup() {
 
-    state.cellSize = displayWidth - props.canvasMargin * 2; // remove margins
+    state.cellSize = windowWidth - props.canvasMargin; // remove margins
     state.cellSize -= (props.borderWidth * (props.panelWidth + 1)); // remove borders ;)
     state.cellSize /= props.panelWidth; // divide by number of cells horizontally
     state.cellSize = int(state.cellSize);
@@ -93,14 +93,24 @@ function fillPanel(col) {
     }
 }
 
+function mouseClicked() {
+    handleInput(true);
+}
+function touchEnded() {
+    handleInput(true);
+}
 function mouseDragged() {
+    handleInput(false);
+}
+
+function handleInput(isSingleTouch) {
     if (mouseX >= 0 &&
         mouseX <= (state.cellSize + props.borderWidth) * props.panelWidth &&
         mouseY >= 0 && mouseY <= (state.cellSize + props.borderWidth) * props.panelHeight) {
         let x = mouseX;
         let y = mouseY;
         let color = state.ui.colorPicker.color();
-        // TODO: this is where we push the change to the server
+
         let targetX = int(x / (state.cellSize + props.borderWidth));
         let targetY = int(y / (state.cellSize + props.borderWidth));
 
@@ -115,7 +125,8 @@ function mouseDragged() {
 
         //If the color has not changed, don't update it
 
-        if ((targetX != state.lastX || targetY != state.lastY) &&
+        if (isSingleTouch ||
+            (targetX != state.lastX || targetY != state.lastY) &&
             (r != r1 || g != g1 || b != b1)) {
 
             sendData(targetX, targetY, r, g, b);
@@ -127,7 +138,9 @@ function mouseDragged() {
 }
 
 let wsUrl = window.location.protocol === "https:" ? "wss://" : "ws://";
-wsUrl += window.location.host + ":81" + window.location.pathname;
+wsUrl += window.location.host;
+wsUrl += window.location.host.endsWith(":3000") ? "" : ":81";
+wsUrl += window.location.pathname;
 wsUrl += "draw";
 
 console.log("WebSocket to", wsUrl);
