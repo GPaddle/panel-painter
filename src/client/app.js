@@ -74,7 +74,7 @@ function sendData(x, y, r, g, b) {
         let g1 = color.levels[1];
         let b1 = color.levels[2];
         if (r != r1 || g != g1 || b != b1) {
-            webSocket.send([x, y, r, g, b]);
+            webSocket.send(JSON.stringify([x, y, r, g, b]));
         }
     }
 }
