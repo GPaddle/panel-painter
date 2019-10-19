@@ -37,7 +37,7 @@ function setup() {
     state.ui.resetButton.mousePressed(resetPannel);
 
     state.ui.fillButton = createButton('fill');
-    state.ui.fillButton.mousePressed(function() {
+    state.ui.fillButton.mousePressed(function () {
         let color = state.ui.colorPicker.color();
         fillPanel(color);
     });
@@ -127,7 +127,7 @@ function mouseDragged() {
 }
 
 let wsUrl = window.location.protocol === "https:" ? "wss://" : "ws://";
-wsUrl += window.location.host + window.location.pathname;
+wsUrl += window.location.host + ":81" + window.location.pathname;
 wsUrl += "draw";
 
 console.log("WebSocket to", wsUrl);
