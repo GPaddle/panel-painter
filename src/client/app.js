@@ -24,7 +24,6 @@ const state = {
 
 function initialise() {
 
-
     document.getElementById("fillBucket").style.color = state.color;
     let windowWidth = parseInt(document.body.clientWidth);
 
@@ -151,8 +150,6 @@ function getTouchPos(e) {
                     let b = parseInt(state.color.substring(5, 7), 16);
 
                     sendData(targetX, targetY, r, g, b);
-
-
                 }
                 draw();
             }
@@ -166,12 +163,9 @@ function getTouchPos(e) {
 
 function onMouseDown(event) {
 
-
     function onMouseMove(event) {
         var canvas_x = event.pageX - props.canvasMargin;
         var canvas_y = event.pageY - props.canvasMargin;
-
-
 
         if (canvas_x >= 0 && canvas_x <= state.canvasWidth && canvas_y >= 0 && canvas_y <= state.canvasHeight) {
 
@@ -186,7 +180,6 @@ function onMouseDown(event) {
                 let b = parseInt(state.color.substring(5, 7), 16);
 
                 sendData(targetX, targetY, r, g, b);
-
 
             }
             draw();
@@ -223,7 +216,6 @@ function draw() {
     state.ui.canvas.fill();
 
     //    console.log(state.canvasHeight);
-
 
     for (let x = 0; x < props.panelWidth; x++) {
         for (let y = 0; y < props.panelHeight; y++) {
