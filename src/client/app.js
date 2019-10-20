@@ -25,7 +25,7 @@ const state = {
 function initialise() {
 
 
-    document.getElementById("fillBucket").style.color=state.color;
+    document.getElementById("fillBucket").style.color = state.color;
     let windowWidth = parseInt(document.body.clientWidth);
 
     computeCellSize();
@@ -49,16 +49,18 @@ function initialise() {
     document.getElementById('colorPicker').addEventListener("change", watchColorPicker, false);
 
     state.ui.fillButton = document.getElementById("fill");
-    state.ui.fillButton.addEventListener("click", function () {
+    state.ui.fillButton.addEventListener("click", function() {
         fill(state.color);
     });
     state.ui.resetButton = document.getElementById("reset");
-    state.ui.resetButton.addEventListener("click", function () {
+    state.ui.resetButton.addEventListener("click", function() {
         fill("#000000");
     });
 
     state.ui.canvas.addEventListener("mousedown", onMouseDown, false);
 
+    canvas.addEventListener('touchstart', touchStart, false);
+    canvas.addEventListener('touchmove', touchMove, false);
 
     window.addEventListener("resize", reComputeSize);
 
@@ -109,15 +111,65 @@ function fill(color) {
 
 function watchColorPicker(event) {
     state.color = event.target.value;
-    document.getElementById("fillBucket").style.color=state.color;
+    document.getElementById("fillBucket").style.color = state.color;
 }
+
+
+
+function sketchpad_touchStart() {
+    getTouchPos();
+    event.preventDefault();
+}
+
+function sketchpad_touchMove(e) {
+    getTouchPos(e);
+    event.preventDefault();
+}
+
+function getTouchPos(e) {
+    if (!e)
+        var e = event;
+
+    if (e.touches) {
+        if (e.touches.length == 1) {
+            var touch = e.touches[0];
+
+
+            var touchX = touch.pageX - props.canvasMargin;
+            var touchY = touch.pageY - props.canvasMargin;
+
+            if (touchX >= 0 && touchX <= state.canvasWidth && touchY >= 0 && touchY <= state.canvasHeight) {
+
+                let targetX = parseInt(touchX / (state.cellSize + props.borderWidth) / 1);
+                let targetY = parseInt(touchY / (state.cellSize + props.borderWidth) / 1);
+
+                if (state.color != state.panelData[targetX][targetY]) {
+                    state.panelData[targetX][targetY] = state.color;
+                    //console.log(state.color);
+                    let r = parseInt(state.color.substring(1, 3), 16);
+                    let g = parseInt(state.color.substring(3, 5), 16);
+                    let b = parseInt(state.color.substring(5, 7), 16);
+
+                    sendData(targetX, targetY, r, g, b);
+
+
+                }
+                draw();
+            }
+        }
+    }
+}
+
+
+
+
 
 function onMouseDown(event) {
 
 
     function onMouseMove(event) {
-        var canvas_x = event.pageX - 10;
-        var canvas_y = event.pageY - 10;
+        var canvas_x = event.pageX - props.canvasMargin;
+        var canvas_y = event.pageY - props.canvasMargin;
 
 
 
