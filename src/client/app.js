@@ -30,7 +30,7 @@ function initialise() {
 
     computeCellSize();
 
-    let canvas = document.getElementById('canvas1');
+    let canvas = document.getElementById("canvas1");
 
     state.ui.canvas = canvas;
 
@@ -45,8 +45,8 @@ function initialise() {
             state.panelData[x][y] = "#000000";
         }
     }
-    state.ui.colorPicker = document.getElementById('colorPicker');
-    document.getElementById('colorPicker').addEventListener("change", watchColorPicker, false);
+    state.ui.colorPicker = document.getElementById("colorPicker");
+    document.getElementById("colorPicker").addEventListener("change", watchColorPicker, false);
 
     state.ui.fillButton = document.getElementById("fill");
     state.ui.fillButton.addEventListener("click", function() {
@@ -59,8 +59,8 @@ function initialise() {
 
     state.ui.canvas.addEventListener("mousedown", onMouseDown, false);
 
-    canvas.addEventListener('touchstart', touchStart, false);
-    canvas.addEventListener('touchmove', touchMove, false);
+    canvas.addEventListener("touchstart", touchStart, false);
+    canvas.addEventListener("touchmove", touchMove, false);
 
     window.addEventListener("resize", reComputeSize);
 
@@ -85,7 +85,7 @@ function reComputeSize() {
     state.canvasWidth = windowWidth;
     state.canvasHeight = windowWidth * (props.panelHeight / props.panelWidth);
 
-    let canvas = document.getElementById('canvas1');
+    let canvas = document.getElementById("canvas1");
     canvas.height = state.canvasHeight;
     canvas.width = state.canvasWidth;
 
@@ -116,12 +116,12 @@ function watchColorPicker(event) {
 
 
 
-function sketchpad_touchStart() {
-    getTouchPos();
+function touchStart(e) {
+    getTouchPos(e);
     event.preventDefault();
 }
 
-function sketchpad_touchMove(e) {
+function touchMove(e) {
     getTouchPos(e);
     event.preventDefault();
 }
@@ -194,11 +194,11 @@ function onMouseDown(event) {
     }
 
     function onMouseUp(event) {
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
     }
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
 }
 
 
