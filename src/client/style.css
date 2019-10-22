@@ -28,7 +28,7 @@ input {
     border: transparent;
 }
 
-button {
+button{
     width: 25%;
     height: 60px;
     margin: 19px 10vw;
@@ -45,4 +45,22 @@ button {
 
     margin: 0 -20px;
 
+}
+
+#Select{
+    margin: 19px 10vw;
+    display: flex;
+}
+
+#uploadInput{
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    background: #bbbbbb20;
+    color: transparent;
+
+}
+
+#canvas2{
+    height: 100%;
 }
