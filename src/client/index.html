@@ -1,24 +1,47 @@
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <script src="app.js"></script>
-  <script src="https://kit.fontawesome.com/c8c08d945a.js" crossorigin="anonymous"></script>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta id="extViewportMeta" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="app.js"></script>
+    <script src="https://kit.fontawesome.com/c8c08d945a.js" crossorigin="anonymous"></script>
 
 </head>
 
 <body onload=initialise()>
-  <canvas id="canvas1">
-    Canvas tag not supported</canvas>
-  <div id="Control">
-    <input type="color" id="colorPicker" name="colorPicker" value="#ffff00">
-    <button id="fill">
-      <i class="fas fa-fill-drip" id="fillBucket"></i>fill
-    </button>
-    <button id="reset">
-      <i class="fas fa-fill-drip" aria-hidden="true" style="color: #000;"></i>reset
-    </button>
-  </div>
+    <canvas id="canvas1">
+        Canvas tag not supported</canvas>
+    <div id="Control">
+        <input type="color" id="colorPicker" name="colorPicker" value="#ffff00">
+        <button id="fill">
+            <i class="fas fa-fill-drip" id="fillBucket"></i>
+            fill
+        </button>
+        <button id="reset">
+            <i class="fas fa-fill-drip" aria-hidden="true" style="color: #000;"></i>
+            reset
+        </button>
+
+        <div id="Select">
+            <form name="uploadForm">
+                <p><input id="uploadInput" type="file" multiple accept="image/*" name="myFiles" onchange="readURL(this);" multiple></p>
+                <p></p>
+            </form>
+
+            <div style="display:none">
+                <img id="source" src="#" alt="your image" />
+                <canvas id="canvasTmp"></canvas>
+            </div>
+
+            <canvas id="canvas2" width="200px" height="100px"></canvas>
+
+        </div>
+    </div>
 
 </body>
 
