@@ -48,11 +48,11 @@ function initialise() {
     document.getElementById("colorPicker").addEventListener("change", watchColorPicker, false);
 
     state.ui.fillButton = document.getElementById("fill");
-    state.ui.fillButton.addEventListener("click", function() {
+    state.ui.fillButton.addEventListener("click", function () {
         fill(state.color);
     });
     state.ui.resetButton = document.getElementById("reset");
-    state.ui.resetButton.addEventListener("click", function() {
+    state.ui.resetButton.addEventListener("click", function () {
         fill("#000000");
     });
 
@@ -123,9 +123,10 @@ function touchMove(e) {
     event.preventDefault();
 }
 
-function getTouchPos(e) {
+function getTouchPos(event) {
+    var e;
     if (!e)
-        var e = event;
+        e = event;
 
     if (e.touches) {
         if (e.touches.length == 1) {
@@ -165,7 +166,7 @@ function sendData(x, y, r, g, b) {
         let g1 = color.g;
         let b1 = color.b;
         if (r != r1 || g != g1 || b != b1) {
-            webSocket.send([x, y, r, g, b]);
+            webSocket.send(JSON.stringify([x, y, r, g, b]));
         }
     }
 }
@@ -209,6 +210,85 @@ function processingCoords(x, y) {
         draw();
     }
 }
+
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            let img = document.getElementById('source');
+            img.src = e.target.result;
+            //            img.width = 320;
+            //            img.height = 80;
+
+        };
+        reader.readAsDataURL(input.files[0]);
+
+
+        let canvas = document.getElementById('canvasTmp');
+        let ctx = canvas.getContext('2d');
+        //    alert("1");
+
+        let image = document.getElementById("source");
+
+
+
+        //    alert("2");
+        image.onload = function () {
+
+            let w = image.width;
+            let h = image.height;
+
+            //canvas.style.width = w;
+            //canvas.style.height = h;
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0);
+
+
+            let canvas2 = document.getElementById("canvas2");
+            let ctx2 = canvas2.getContext('2d');
+
+            canvas2.width = 10 * w;
+            canvas2.height = 10 * h;
+
+            //alert(canvas2.width);
+
+
+            ctx2.fillStyle = "white";
+            ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
+            fill("#000000");
+
+            let xMax = Math.min(image.width, 32);
+            let yMax = Math.min(image.height, 8);
+
+            for (let x = 0; x < xMax; x++) {
+                for (let y = 0; y < yMax; y++) {
+                    let data = ctx.getImageData(x, y, 1, 1);
+
+                    let couleur = "#" + data.data[0].toString(16) +
+                        data.data[1].toString(16) +
+                        data.data[2].toString(16);
+                    ctx2.fillStyle = couleur;
+
+                    ctx2.fillRect(x * 10, y * 10, 10, 10);
+
+                    if (couleur != state.panelData[x][y]) {
+                        state.panelData[x][y] = couleur;
+                        //console.log(state.color);
+                        let r = data.data[0];
+                        let g = data.data[1];
+                        let b = data.data[2];
+
+                        sendData(x, y, r, g, b);
+
+                    }
+                    draw();
+                }
+            }
+        };
+    }
+}
+
 
 let wsUrl = window.location.protocol === "https:" ? "wss://" : "ws://";
 wsUrl += window.location.host;
